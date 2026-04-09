@@ -2,7 +2,7 @@ const API_BASE = window.location.hostname === "localhost" || window.location.hos
   ? "http://localhost:5001"
   : "https://multi-thread-dictionary.onrender.com";
 const wordInput  = document.getElementById("wordInput");
-const searchBtn  = document.getElementById("searchBtn");
+const searchBtn  = document.getElementById("searchbtn");
 const resultArea = document.getElementById("result");
 const serverDot  = document.getElementById("server-dot");
 const serverLbl  = document.getElementById("server-status");
@@ -16,7 +16,10 @@ let theme = localStorage.getItem("dict-theme") || "dark";
 function applyTheme(t) {
   theme = t;
   html.setAttribute("data-theme", t);
-  toggleIcon.textContent = t === "dark" ? "☀" : "☾";
+  if (toggleIcon) {
+    toggleIcon.textContent = t === "dark" ? "☀" : "☾";
+  }
+  
   localStorage.setItem("dict-theme", t);
 }
 
@@ -85,6 +88,7 @@ function showError(msg) {
 // ── Main lookup ───────────────────────────────────────────────
 async function lookup() {
   const word = wordInput.value.trim();
+  const lang = document.getElementById("langSelect").value;
   if (!word) {
     wordInput.focus();
     return;
@@ -94,7 +98,7 @@ async function lookup() {
   searchBtn.disabled = true;
 
   try {
-    const res  = await fetch(`${API_BASE}/lookup?word=${encodeURIComponent(word)}`);
+    const res = await fetch(`${API_BASE}/lookup?word=${encodeURIComponent(word)}&lang=${lang}`);
     const data = await res.json();
 
     if (data.status === "success") {

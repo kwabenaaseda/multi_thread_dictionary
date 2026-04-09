@@ -15,7 +15,15 @@
   --border: #e2e8f0;
   --text-main: #0f172a;
   --text-dim: #64748b;
-  --accent: #4f46e5;
+  --accent: #221f4a;
+}
+[data-theme="dark"] {
+  --bg: #0f1115;        /* Deep charcoal for the base layer */
+  --surface: #17191e;   /* Slightly lighter elevation for cards/search box */
+  --border: #2a2d35;    /* Subtle separation that remains visible */
+  --text-main: #e2e4e9; /* Off-white to reduce eye strain compared to pure white */
+  --text-dim: #9499a6;  /* Muted grey for metadata and secondary info */
+  --accent: #6366f1;    /* Vibrant indigo that pops against the dark surface */
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -31,7 +39,7 @@ body {
 .app-container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1.5rem; /* Reduced padding for mobile */
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -73,56 +81,107 @@ body {
   font-size: 1.25rem;
 }
 
+/* Ensure the toggle and icon adapt to the theme text color */
+.icon-btn {
+  color: var(--text-main); /* Dynamically switches between #0f172a and #e2e4e9 */
+  transition: color 0.3s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+}
+
+.icon-btn:hover {
+  color: var(--accent);
+  transform: scale(1.1);
+}
+
+#toggleIcon {
+  display: inline-block;
+  line-height: 1;
+}
 /* Main Layout Grid */
 .main-layout {
   display: grid;
-  grid-template-columns: 1fr 280px;
-  gap: 4rem;
-  padding: 4rem 0;
+  /* Single column by default (Mobile) */
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  padding: 2rem 0;
   flex: 1;
 }
 
-@media (max-width: 850px) {
-  .main-layout { grid-template-columns: 1fr; }
-  .sidebar { order: 2; }
+
+
+@media (min-width: 850px) {
+  .main-layout {
+    grid-template-columns: 1fr 300px;
+    gap: 4rem;
+    padding: 4rem 0;
+  }
+  
+  .sidebar {
+    position: sticky;
+    top: 2rem;
+    height: fit-content;
+    width: 100%;
+  max-width: 100%;
+  }
 }
 
 /* Search Box */
 .search-container {
   display: flex;
+  align-items: center;
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  margin-bottom: 3rem;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 6px;
+  width: 100%;           /* Stay within the parent */
+  max-width: 100%;       /* Never expand beyond the screen */
+  box-sizing: border-box; /* Include padding/border in width calculation */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.search-container:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
 }
 
 .search-container input {
-  flex: 1;
+ flex-grow: 1;    /* Take only the remaining space */
+  min-width: 0;    /* CRITICAL: Allows the input to shrink to 0 if needed */
   background: transparent;
   border: none;
-  padding: 12px 16px;
+  padding: 12px;
   color: var(--text-main);
-  font-size: 1.1rem;
+  font-size: 1rem;
   outline: none;
 }
 
-.search-container button {
+.search-btn {
   background: var(--accent);
   color: white;
   border: none;
-  padding: 0 24px;
+  padding: 0 20px;
+  height: 40px;
   border-radius: 8px;
-  font-weight: 500;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
 }
 
 /* Results */
 .entry-word {
   font-family: var(--font-serif);
-  font-size: 4rem;
-  margin-bottom: 0.5rem;
+  font-size: clamp(3rem, 10vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 1.5rem 0 0.5rem;
 }
 
 .entry-definition {
@@ -132,6 +191,12 @@ body {
   font-style: italic;
   border-left: 3px solid var(--accent);
   padding-left: 1.5rem;
+  
+  /* ── The Fix for Bleeding ── */
+  word-wrap: break-word;       /* Legacy support */
+  overflow-wrap: break-word;   /* Modern standard */
+  hyphens: auto;               /* Better aesthetic for long French words */
+  max-width: 100%;             /* Ensure it stays in the container */
 }
 
 /* History Sidebar */
@@ -144,16 +209,33 @@ body {
 }
 
 .history-list {
+  display:inline-flex;
+  flex-wrap: wrap; /* CRITICAL: Allows chips to wrap to the next line */
+  gap: 8px;
+  padding: 0;
   list-style: none;
+  max-width: 100%; /* Ensure it doesn't overflow the sidebar */
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-sizing: border-box;
 }
-
 .history-item {
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  white-space: nowrap; /* Keeps the word on one line... */
+  max-width: 140px;    /* ...but limits how wide that line can be */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Adds '...' if the word is too long */
   cursor: pointer;
-  color: var(--text-main);
-  font-size: 0.95rem;
-  transition: color 0.2s;
+}
+.history-item:active {
+  transform: scale(0.95);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .history-item:hover { color: var(--accent); }
@@ -180,3 +262,143 @@ body {
   display: flex;
   justify-content: space-between;
 }
+
+@media (max-width: 400px) {
+  .status-text {
+    display: none; /* Only show the green/red dot on small phones */
+  }
+  .brand-name {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-container {
+    padding: 4px;
+  }
+  
+  .search-container button {
+    padding: 0 16px; /* Slightly smaller padding on tiny phones */
+    font-size: 0.9rem;
+  }
+}
+
+/* ── Mobile History Navigation ── */
+.history-list {
+  display: flex;
+  flex-wrap: wrap; /* Chips for mobile */
+  gap: 8px;
+  list-style: none;
+}
+
+@media (min-width: 850px) {
+  .history-list {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .history-item {
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+  }
+}
+
+.history-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+/* ── Mobile Touch & Spacing Refinements ── */
+@media (max-width: 600px) {
+  .app-container {
+    padding: 0 1rem; /* Tighter margins on small screens */
+  }
+
+  .site-header {
+    padding: 1.2rem 0; /* Compact header */
+  }
+
+  .main-layout {
+    padding: 1.5rem 0; /* Less dead space before search */
+    gap: 1.5rem;
+  }
+
+  /* Optimize search bar for thumbs */
+  .search-container {
+    padding: 4px;
+    border-radius: 10px;
+  }
+
+  .search-container input {
+    padding: 10px 12px;
+    font-size: 1rem; /* Prevents iOS auto-zoom on focus */
+  }
+
+  .search-container button {
+    padding: 0 16px;
+  }
+
+  /* History as Horizontal Chips */
+  .history-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto; /* Allow horizontal swiping */
+    gap: 8px;
+    padding-bottom: 10px;
+    scrollbar-width: none; /* Hide scrollbar for clean look */
+  }
+
+  .history-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .history-item {
+    flex: 0 0 auto; /* Don't shrink chips */
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    white-space: nowrap;
+    font-size: 0.8rem;
+  }
+
+  /* Tighter Footer for Mobile */
+  .site-footer {
+    padding: 1.5rem 0;
+    font-size: 0.75rem;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: flex-start;
+  }
+}
+
+/* ── Custom Language Selector ── */
+.lang-selector {
+  flex-shrink: 0; /* Don't let the dropdown get crushed */
+  background: var(--bg);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  appearance: none;
+  cursor: pointer;
+}
+
+.lang-selector:hover {
+  border-color: var(--accent);
+  color: var(--text-main);
+}
+
+.lang-selector:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+

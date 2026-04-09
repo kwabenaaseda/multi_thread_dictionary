@@ -15,30 +15,36 @@
   </div>
 
   <div class="app-container">
-    <header class="site-header">
-      <div class="nav-content">
-        <div class="brand">
-          <span class="brand-logo">L</span>
-          <span class="brand-name">Lexicon</span>
-        </div>
-        <div class="nav-controls">
-          <div class="status-indicator">
-            <span class="dot" id="server-dot"></span>
-            <span id="server-status">Connecting</span>
-          </div>
-          <button class="icon-btn" id="themeToggle" title="Toggle Theme">
-            <span id="toggleIcon">☀</span>
-          </button>
-        </div>
+   <header class="site-header">
+  <div class="nav-content">
+    <div class="brand">
+      <span class="brand-logo">L</span>
+      <span class="brand-name">Lexicon</span>
+    </div>
+    <div class="nav-controls" style="display: flex; align-items: center; gap: 15px;">
+      <div class="status-pill" style="display: flex; align-items: center; gap: 6px;">
+        <span class="dot" id="server-dot"></span>
+        <span id="server-status" class="status-text" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px;">Connecting</span>
       </div>
-    </header>
+      <button class="icon-btn" id="themeToggle" style="background: none; border: none; font-size: 1.2rem; cursor: pointer;">
+        <span id="toggleIcon">☀</span>
+      </button>
+    </div>
+  </div>
+</header>
 
     <main class="main-layout">
       <section class="search-section">
         <div class="search-container">
-          <input type="text" id="wordInput" placeholder="Search for a concept..." autocomplete="off">
-          <button id="searchBtn">Search</button>
-        </div>
+  <select id="langSelect" class="lang-selector">
+    <option value="en" selected>EN</option>
+    <option value="fr">FR</option>
+    <option value="es">ES</option>
+    <option value="hi">HI</option>
+  </select>
+  <input type="text" id="wordInput" placeholder="Search for a concept...">
+  <button id="searchbtn" class="search-btn">Search</button>
+</div>
         
         <div id="result" class="result-display">
           <div class="empty-state">

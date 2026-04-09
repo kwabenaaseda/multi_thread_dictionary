@@ -3,14 +3,18 @@ from flask_cors import CORS
 from dictionary_service import DictionaryService
 
 app = Flask(__name__)
-CORS(app)  # Allows the browser frontend to call this API
+# Allows your frontend to call this API regardless of port differences
+CORS(app)  
 
-# One shared instance — same pattern as the TCP server
+# Shared instance of the updated, language-aware service
 dictionary_service = DictionaryService("dictionary.json")
 
 @app.route("/lookup", methods=["GET"])
 def lookup():
+    # 1. Extract parameters from the query string
     word = request.args.get("word", "").strip()
+    # 2. Extract language (default to 'en' for backward compatibility)
+    lang = request.args.get("lang", "en").strip().lower()
 
     if not word:
         return jsonify({
@@ -20,9 +24,11 @@ def lookup():
             "source": None
         }), 400
 
-    result = dictionary_service.lookup(word)
+    # 3. Call the updated service method with both word and language
+    result = dictionary_service.lookup(word, lang)
 
     if result:
+        # Success response including the dynamic source (e.g., "API (FR)")
         return jsonify({
             "status": "success",
             "definition": result["definition"],
@@ -30,19 +36,21 @@ def lookup():
             "error": None
         }), 200
     else:
+        # Not found response
         return jsonify({
             "status": "not_found",
             "definition": None,
             "source": None,
-            "error": f"'{word}' was not found."
+            "error": f"'{word}' was not found in {lang.upper()}."
         }), 404
 
 
 @app.route("/health", methods=["GET"])
 def health():
-    """Simple endpoint to check if the API server is alive."""
+    """Endpoint for the frontend status dot."""
     return jsonify({"status": "ok"}), 200
 
 
 if __name__ == "__main__":
+    # Standard development port for your project
     app.run(host="0.0.0.0", port=5001, debug=True)
