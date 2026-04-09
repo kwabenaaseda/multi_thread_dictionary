@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dict — Remote Dictionary Server</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Background layer -->
+  <div class="bg-layer" aria-hidden="true">
+    <div class="bg-pattern"></div>
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <div class="page">
+
+    <header class="header">
+      <div class="header-left">
+        <span class="logo-mark">§</span>
+        <span class="logo-text">Dict</span>
+      </div>
+      <div class="header-right">
+        <div class="status-pill">
+          <span class="server-dot" id="server-dot"></span>
+          <span id="server-status">connecting</span>
+        </div>
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+          <span id="toggleIcon">☀</span>
+        </button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-tag">
+        <span class="tag-dot"></span>
+        Remote Dictionary Server
+      </div>
+      <h1 class="hero-title">
+        What does<br>it <em>mean?</em>
+      </h1>
+      <p class="hero-sub">Local cache · Free Dictionary API · Raw TCP sockets</p>
+    </section>
+
+    <div class="search-wrapper">
+      <div class="search-box">
+        <span class="search-glyph">✦</span>
+        <input
+          type="text"
+          id="wordInput"
+          class="search-input"
+          placeholder="type a word..."
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button id="searchBtn" class="search-btn">
+          <span>Look up</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="result" class="result-area" aria-live="polite"></div>
+
+    <footer class="footer">
+      <span>TCP :5000</span>
+      <span class="sep">·</span>
+      <span>HTTP :5001</span>
+      <span class="footer-gap"></span>
+      <span>UENR · DS Assignment 1</span>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

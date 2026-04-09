@@ -1,0 +1,12 @@
+{
+  "serendipity": "The occurrence of events by chance in a happy or beneficial way.",
+  "ephemeral": "Lasting for a very short time.",
+  "ubiquitous": "Present, appearing, or found everywhere.",
+  "latency": "The delay before a transfer of data begins following an instruction.",
+  "concurrency": "The ability of a system to handle multiple tasks overlapping in time.",
+  "mutex": "A mutual exclusion lock that prevents multiple threads from accessing a resource simultaneously.",
+  "socket": "An endpoint for communication between two machines over a network.",
+  "thread": "The smallest sequence of programmed instructions that can be managed independently by a scheduler.",
+  "bandwidth": "The maximum rate of data transfer across a network path.",
+  "protocol": "A set of rules governing the exchange of data between systems."
+}
