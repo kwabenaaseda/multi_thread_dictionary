@@ -1,5 +1,6 @@
-const API_BASE   = "http://localhost:5001";
-
+const API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+  ? "http://localhost:5001"
+  : "https://multi-thread-dictionary.onrender.com";
 const wordInput  = document.getElementById("wordInput");
 const searchBtn  = document.getElementById("searchBtn");
 const resultArea = document.getElementById("result");
