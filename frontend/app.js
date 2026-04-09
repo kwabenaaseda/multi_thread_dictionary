@@ -112,6 +112,65 @@ async function lookup() {
     searchBtn.disabled = false;
   }
 }
+// ... (Keep existing API_BASE and checkHealth logic)
+
+const historyList = document.getElementById("historyList");
+const clearHistoryBtn = document.getElementById("clearHistory");
+
+let searchHistory = JSON.parse(localStorage.getItem("dict-history")) || [];
+
+// ── Enhanced Render Logic ─────────────────────────────────────
+function updateHistoryUI() {
+  historyList.innerHTML = searchHistory
+    .map(word => `<li class="history-item" onclick="quickLookup('${word}')">${word}</li>`)
+    .join('');
+}
+
+function addToHistory(word) {
+  if (!searchHistory.includes(word)) {
+    searchHistory.unshift(word);
+    searchHistory = searchHistory.slice(0, 10); // Keep last 10
+    localStorage.setItem("dict-history", JSON.stringify(searchHistory));
+    updateHistoryUI();
+  }
+}
+
+// Global function for sidebar clicks
+window.quickLookup = (word) => {
+  wordInput.value = word;
+  lookup();
+};
+
+async function lookup() {
+  const word = wordInput.value.trim();
+  if (!word) return;
+
+  showLoading();
+  searchBtn.disabled = true;
+
+  try {
+    const res = await fetch(`${API_BASE}/lookup?word=${encodeURIComponent(word)}`);
+    const data = await res.json();
+
+    if (data.status === "success") {
+      showEntry(word, data.definition, data.source);
+      addToHistory(word); // Success! Add to history
+    } else if (data.status === "not_found") {
+      showNotFound(word);
+    }
+  } catch {
+    showError("Connection failed.");
+  } finally {
+    searchBtn.disabled = false;
+  }
+}
+
+clearHistoryBtn.addEventListener("click", () => {
+  searchHistory = [];
+  localStorage.removeItem("dict-history");
+  updateHistoryUI();
+});
+
 
 // ── Events ────────────────────────────────────────────────────
 searchBtn.addEventListener("click", lookup);
@@ -119,4 +178,5 @@ wordInput.addEventListener("keydown", e => { if (e.key === "Enter") lookup(); })
 wordInput.focus();
 
 // ── Init ──────────────────────────────────────────────────────
+updateHistoryUI();
 checkHealth();
