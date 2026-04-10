@@ -209,28 +209,29 @@ body {
 }
 
 .history-list {
-  display:inline-flex;
-  flex-wrap: wrap; /* CRITICAL: Allows chips to wrap to the next line */
-  gap: 8px;
+  display: flex;
+  flex-wrap: wrap;       /* Allows chips to move to the next line */
+  gap: 8px;              /* Space between chips */
   padding: 0;
+  margin-top: 1rem;
   list-style: none;
-  max-width: 100%; /* Ensure it doesn't overflow the sidebar */
-  border: 1px solid var(--border);
-  overflow: hidden;
-  box-sizing: border-box;
+  width: 100%;           /* Stay within sidebar bounds */
 }
+
 .history-item {
+  flex: 0 1 auto;        /* Allow natural width but allow shrinking */
   background: var(--surface);
   border: 1px solid var(--border);
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 20px;
   font-size: 0.8rem;
   color: var(--text-dim);
-  white-space: nowrap; /* Keeps the word on one line... */
-  max-width: 140px;    /* ...but limits how wide that line can be */
-  overflow: hidden;
-  text-overflow: ellipsis; /* Adds '...' if the word is too long */
   cursor: pointer;
+  white-space: nowrap;
+  max-width: 150px;      /* Prevents giant words from breaking the layout */
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  transition: all 0.2s ease;
 }
 .history-item:active {
   transform: scale(0.95);
@@ -238,8 +239,11 @@ body {
   color: var(--accent);
 }
 
-.history-item:hover { color: var(--accent); }
-
+.history-item:hover {
+  border-color: var(--accent);
+  color: var(--text-main);
+  background: var(--bg);
+}
 .text-btn {
   background: none;
   border: none;

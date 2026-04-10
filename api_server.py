@@ -36,12 +36,14 @@ def lookup():
             "error": None
         }), 200
     else:
+        suggestions = dictionary_service.get_suggestions(word)
         # Not found response
         return jsonify({
             "status": "not_found",
             "definition": None,
+            "suggestions": suggestions,
             "source": None,
-            "error": f"'{word}' was not found in {lang.upper()}."
+            "error": f"'{word}' was not found in {lang.upper()}. Did you mean: {', '.join(suggestions)}?" if suggestions else f"'{word}' was not found in {lang.upper()} and no close matches were found."
         }), 404
 
 

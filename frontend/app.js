@@ -88,30 +88,26 @@ function showError(msg) {
 // ── Main lookup ───────────────────────────────────────────────
 async function lookup() {
   const word = wordInput.value.trim();
-  const lang = document.getElementById("langSelect").value;
-  if (!word) {
-    wordInput.focus();
-    return;
-  }
+  const lang = document.getElementById("langSelect").value; // Get selected lang
+  
+  if (!word) return;
 
   showLoading();
   searchBtn.disabled = true;
 
   try {
+    // Pass the language to the backend
     const res = await fetch(`${API_BASE}/lookup?word=${encodeURIComponent(word)}&lang=${lang}`);
     const data = await res.json();
 
     if (data.status === "success") {
       showEntry(word, data.definition, data.source);
+      addToHistory(word);
     } else if (data.status === "not_found") {
       showNotFound(word);
-    } else {
-      showError(data.error || "unknown error");
     }
   } catch {
-    showError("could not reach the server — is it running?");
-    serverDot.className = "server-dot offline";
-    serverLbl.textContent = "offline";
+    showError("Connection failed.");
   } finally {
     searchBtn.disabled = false;
   }
@@ -174,6 +170,16 @@ clearHistoryBtn.addEventListener("click", () => {
   localStorage.removeItem("dict-history");
   updateHistoryUI();
 });
+async function setupAutocomplete() {
+  const datalist = document.getElementById("wordSuggestions");
+  // In a real distributed system, you'd fetch this from a /words endpoint
+  // For now, let's assume you have a list of common words
+  const commonWords = ["latency", "concurrency", "mutex", "protocol", "socket", "thread", "process", "cache", "load balancer", "replication", "sharding", "consistency", "availability", "partition tolerance", "scalability", "throughput", "bandwidth", "queue", "worker", "event loop", "asynchronous", "synchronous", "API", "endpoint", "microservice", "container", "orchestration", "virtualization", "cloud", "serverless", "database", "indexing", "query", "transaction", "rollback", "commit", "deadlock", "race condition", "idempotent", "caching", "load testing", "stress testing", "monitoring", "logging", "tracing", "debugging", "profiling", "optimization", "refactoring", "code review", "version control", "CI/CD", "devops"]; 
+  
+  datalist.innerHTML = commonWords
+    .map(word => `<option value="${word}">`)
+    .join('');
+}
 
 
 // ── Events ────────────────────────────────────────────────────
@@ -184,3 +190,4 @@ wordInput.focus();
 // ── Init ──────────────────────────────────────────────────────
 updateHistoryUI();
 checkHealth();
+setupAutocomplete();
