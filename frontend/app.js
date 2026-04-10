@@ -152,12 +152,20 @@ async function lookup() {
     const res = await fetch(`${API_BASE}/lookup?word=${encodeURIComponent(word)}`);
     const data = await res.json();
 
-    if (data.status === "success") {
-      showEntry(word, data.definition, data.source);
-      addToHistory(word); // Success! Add to history
-    } else if (data.status === "not_found") {
-      showNotFound(word);
+  // Inside your lookup() try block:
+if (data.status === "success") {
+    showEntry(word, data.definition, data.source);
+    addToHistory(word);
+} else if (data.status === "not_found") {
+    let errorMsg = data.error;
+    if (data.suggestions && data.suggestions.length > 0) {
+        const links = data.suggestions.map(s => 
+            `<button class="suggestion-link" onclick="quickLookup('${s}')">${s}</button>`
+        ).join(', ');
+        errorMsg = `Did you mean: ${links}?`;
     }
+    showError(errorMsg);
+}
   } catch {
     showError("Connection failed.");
   } finally {
