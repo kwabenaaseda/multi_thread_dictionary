@@ -43,6 +43,30 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.app-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('./Gemini_Generated_Image_4x1ho34x1ho34x1h-removebg-preview\(1\).png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 50vw;
+  background-attachment: fixed;
+  opacity: 0.08;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.app-container > * {
+  position: relative;
+  z-index: 1;
 }
 
 /* Header */
@@ -411,4 +435,3 @@ body {
   border-color: var(--accent);
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
 }
-
